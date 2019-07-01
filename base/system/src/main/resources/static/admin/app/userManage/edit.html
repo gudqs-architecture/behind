@@ -1,0 +1,62 @@
+<div class="my-box">
+    <form class="layui-form layui-form-pane1 user-form" method="post" onsubmit="return false">
+        <div class="layui-form-item">
+            <label class="layui-form-label">登录名</label>
+            <div class="layui-input-block">
+                <input name="loginName" lay-verify="required"
+                       required
+                       maxlength="100"
+                       placeholder="请输入登录名"
+                       value="{{loginName}}"
+                       class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item pwd-data">
+            <label class="layui-form-label">密码</label>
+            <div class="layui-input-block">
+                <input name="password" lay-verify="required"
+                       required
+                       type="password"
+                       maxlength="100"
+                       placeholder="请输入密码"
+                       value="{{password}}"
+                       class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">昵称</label>
+            <div class="layui-input-block">
+                <input name="nickName" lay-verify="required"
+                       required
+                       data-ok
+                       maxlength="100"
+                       placeholder="请输入昵称"
+                       value="{{nickName}}"
+                       class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">头像</label>
+            <div class="layui-input-block">
+                <div class="layui-upload avatar-upload">
+                    <button type="button" class="layui-btn layui-btn-sm btn-upload-avatar">选择图片</button>
+                    <div class="layui-upload-list">
+                        <img class="upload-img" src="{{avatarUrl}}" width="80px">
+                        <p class="upload-tip"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">拥有角色</label>
+            <div class="layui-input-block">
+                <select multiple name="sysRoleIds" title="roles" lay-ignore data-use-select2>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+            </div>
+        </div>
+
+    </form>
+</div>

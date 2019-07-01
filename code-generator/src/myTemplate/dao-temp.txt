@@ -1,0 +1,13 @@
+package {{basePackage}}.mapper;
+
+import {{base}}.BaseSqlMapper;
+import org.springframework.stereotype.Repository;
+import {{basePackage}}.entity.{{className}};
+
+/**
+ * @author generate by guddqs
+ * @date {{date}}
+ */
+@Repository
+public interface {{daoName}} extends BaseSqlMapper<{{className}}>{
+}

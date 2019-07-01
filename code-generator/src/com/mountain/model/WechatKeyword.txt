@@ -1,0 +1,50 @@
+package com.mountain.generator;
+
+import lombok.Data;
+
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+/**
+ * @author wq
+ * @date 2019-4-25
+ * @description 公众号关键词回复表
+ */
+@Data
+@Table(name = "wechat_keyword")
+public class WechatKeyword {
+
+    public WechatKeyword() { }
+
+    @Id
+    @GeneratedValue(generator = "JDBC")
+    private Integer keywordId;
+    /**
+     * 关键词
+     */
+    private String keyword;
+    /**
+     * 匹配方式: 1.完全等于 2.关键词包含用户输入 3.用户输入包含关键词
+     */
+    private Integer matchType;
+    /**
+     * 回复消息类型: 1.普通文本 2.可带小程序链接文本 3.图片 4.图文信息 5.小程序
+     */
+    private Integer replyType;
+    /**
+     * 回复内容, json 格式
+     */
+    private String replyData;
+    /**
+     * 更新时间
+     */
+    private TIMESTAMP updateTime;
+    /**
+     * 0|1
+     */
+    private Integer status;
+
+}
+
+

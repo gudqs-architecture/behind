@@ -1,0 +1,39 @@
+package {{basePackage}}.web.api;
+
+import {{base}}.BaseController;
+import {{base}}.ResultBean;
+import {{basePackage}}.entity.{{className}};
+import {{basePackage}}.service.{{serviceName}};
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import java.util.List;
+
+
+/**
+ * @author generate by guddqs
+ * @date {{date}}
+ */
+@RestController
+@RequestMapping("{{apiControllerUrl}}")
+@Api(description = "{{apiControllerName}}")
+public class {{apiControllerName}} extends BaseController {
+
+    @Resource
+    private {{serviceName}} {{serviceBeanName}};
+
+    @ApiOperation("list")
+    @PostMapping("/list")
+    public ResultBean<List<{{className}}>> list({{className}} entity, Integer pageNo, Integer pageSize) throws Exception {
+        return findLike({{serviceBeanName}}, pageNo, pageSize, entity);
+    }
+
+    @ApiOperation("get")
+    @GetMapping("/get/{id}")
+    public ResultBean get(@PathVariable Integer id) throws Exception {
+        return success({{serviceBeanName}}.findById(id));
+    }
+
+}

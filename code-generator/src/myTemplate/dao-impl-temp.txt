@@ -1,0 +1,13 @@
+package {{basePackage}}.dao.impl;
+
+import {{base}}.base.BaseDaoImpl;
+import {{basePackage}}.dao.{{daoName}};
+import {{basePackage}}.model.{{className}};
+
+/**
+ * @author generate by guddqs
+ * @date {{date}}
+ */
+@IocBean(name = "{{daoBeanName}}")
+public class {{daoImplName}} extends BaseDaoImpl<{{className}}> implements {{daoName}} {
+}

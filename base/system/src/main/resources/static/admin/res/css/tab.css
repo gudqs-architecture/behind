@@ -1,0 +1,60 @@
+.my-tab {
+    background: #393D49;
+    color: rgba(255, 255, 255, .7);
+    line-height: 32px;
+    position: relative;
+    height: 46px;
+    left: 200px;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 998;
+    width: auto;
+    overflow: hidden;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.layui-body-wrapper .layui-body {
+    top: 106px;
+}
+
+.my-tab ul {
+
+}
+
+.my-tab ul:after {
+    height: 0;
+    content: ' ';
+    overflow: hidden;
+    clear: both;
+}
+
+.my-tab li.tab-separator {
+    float: left;
+    position: absolute;
+    display: inline-block;
+    overflow: hidden;
+    width: 0;
+    background: #eee;
+    height: 55%;
+    margin: 10px 0;
+}
+
+.my-tab li.tab-item.active {
+    color: white;
+    background: #009688;
+}
+
+.my-tab li.tab-item {
+    float: left;
+    padding: 7px 20px;
+    overflow: hidden;
+    font-size: 14px;
+    list-style: none;
+    max-width: 120px;
+    word-break: keep-all;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}

@@ -1,0 +1,103 @@
+.layui-layout-admin .layui-body {
+    bottom: 0;
+}
+.wrapper {
+    margin: 10px 15px 10px 10px;
+}
+
+.layui-body .body-item {
+    display: none;
+}
+
+.layui-body .body-item.active {
+    display: block;
+}
+
+button.layui-btn-sm i.fa {
+    font-size: 14px !important;
+}
+
+/*start 滚动条*/
+::-webkit-scrollbar-track {
+    background-color: #F5F5F5;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 7px;
+    background: #009688 -webkit-linear-gradient(45deg,
+    rgba(255, 255, 255, .2) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, .2) 50%,
+    rgba(255, 255, 255, .2) 75%,
+    transparent 75%,
+    transparent);
+}
+
+/*end 滚动条*/
+
+/*start color*/
+.color-blue {
+    color: #1E9FFF !important;
+}
+
+.my-link {
+    color: #007bff !important;
+    cursor: pointer;
+}
+.my-read-link {
+    color: #ff2d1f !important;
+    cursor: pointer;
+}
+
+.my-box {
+    margin: 20px;
+}
+
+.input-hidden {
+    border: none;
+}
+
+.bold-black {
+    font-weight: bold;
+    color: black;
+}
+
+.money-tip {
+    padding-top: 3px;
+    padding-left: 120px
+}
+
+.page-load-fail {
+    margin-top: 20%;
+    font-size: 50px;
+    color: #666;
+    margin-left: 33%
+}
+
+*.un-select {
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.select2-container {
+    z-index: 99999;
+}
+
+.select2 {
+    padding-top: 5px;
+}
+
+.select2 .select2-selection__arrow b {
+    margin-top: 3px !important;
+}

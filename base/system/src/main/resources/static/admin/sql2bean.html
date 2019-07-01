@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SQL to Bean</title>
+    <style>
+        .sql, .bean {
+            float: left;
+            margin: 15px;
+        }
+    </style>
+</head>
+<body>
+<h1>SQL to Bean</h1>
+<div class="main-wrapper">
+    <h3> 将 较为规范的SQL DDL脚本复制到下面左边, 然后回车</h3>
+    <div class="sql">
+        <textarea class="sql-text" autofocus rows="30" cols="55"></textarea>
+    </div>
+    <div class="bean">
+        <textarea class="bean-text" rows="30" cols="80"></textarea>
+    </div>
+    <div class="tip">
+
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+
+    +function () {
+
+        var getTemplate = function (packageName) {
+            return 'package ' + packageName + ';\n' +
+                '\n' +
+                'import io.swagger.annotations.ApiModelProperty;\n' +
+                'import lombok.Data;\n' +
+                '\n' +
+                'import javax.persistence.GeneratedValue;\n' +
+                'import javax.persistence.Id;\n' +
+                'import javax.persistence.Table;\n' +
+                '\n' +
+                '/**\n' +
+                ' * @author wq\n' +
+                ' * @date {{date}}\n' +
+                ' * @description {{tableComment}}\n' +
+                ' */\n' +
+                '@Data\n' +
+                '@Table(name = "{{tableName}}")\n' +
+                'public class {{className}} {\n\n' +
+                '    public {{className}}() { }\n' +
+                '\n' +
+                '{{columns}}' +
+                '\n' +
+                '}\n' +
+                '\n';
+        };
+
+        var getSqlObj = function () {
+            var sql = document.querySelector('.sql-text').value;
+            var sqlArray = sql.split('\n');
+            var sqlObj = {};
+            sqlObj.columns = {};
+            var overTable = false;
+            for (var i = 0; i < sqlArray.length; i++) {
+                var oldSql = sqlArray[i];
+                var sqlLine = oldSql.trim();
+                var upperSqlLine = sqlLine.trim().toUpperCase();
+                if (sqlLine.trim() === ''
+                    || upperSqlLine.indexOf('ENGINE') !== -1
+                    || upperSqlLine.indexOf('=') !== -1
+                    || upperSqlLine === ('(')
+                    || upperSqlLine === (')')
+                    || upperSqlLine.indexOf('UTF8') !== -1) {
+                    if (upperSqlLine.indexOf('ENGINE') !== -1) {
+                        overTable = true;
+                    }
+                } else if (upperSqlLine.indexOf('CREATE TABLE') !== -1) {
+                    var lastIndex = sqlLine.lastIndexOf('(');
+                    if (lastIndex === -1) {
+                        lastIndex = sqlLine.length;
+                    }
+                    sqlObj.tableName = sqlLine.substr(upperSqlLine.indexOf('TABLE') + 6, (lastIndex - (upperSqlLine.indexOf('TABLE') + 6))).trim();
+                } else if (overTable && upperSqlLine.indexOf('COMMENT') !== -1) {
+                    sqlObj.tableComment = sqlLine.substr(upperSqlLine.indexOf('COMMENT') + 9, ((sqlLine.lastIndexOf(';')) - (upperSqlLine.indexOf('COMMENT') + 10)));
+                } else if (!overTable) {
+                    var column = {};
+                    var index = 0;
+                    if (upperSqlLine.indexOf('PRIMARY KEY') !== -1) {
+                        column.id = true;
+                    }
+                    if (upperSqlLine.indexOf('AUTO_INCREMENT') !== -1) {
+                        column.generator = 'JDBC';
+                    }
+                    if (upperSqlLine.indexOf('COMMENT') !== -1) {
+                        var start = oldSql.toUpperCase().indexOf('COMMENT') + 9;
+                        var end = ((oldSql.lastIndexOf('\'')));
+                        column.comment = oldSql.substring(start, end);
+                    }
+
+                    var columnArray = sqlLine.split(' ');
+                    for (var j = 0; j < columnArray.length; j++) {
+                        var columnStr = columnArray[j];
+                        if (columnStr.trim() !== '') {
+                            if (columnStr.trim() === 'CONSTRAINT'
+                                || columnStr.trim() === 'KEY') {
+                                break;
+                            }
+                            if (columnStr.trim() === 'PRIMARY') {
+                                var idField = sqlLine.substr(upperSqlLine.indexOf('(') + 1, ((sqlLine.lastIndexOf(')')) - (upperSqlLine.indexOf('(') + 1)));
+                                console.log('id', idField, sqlObj.columns);
+                                sqlObj.columns[idField + ''].id = true;
+                                break;
+                            } else {
+                                if (index === 0) {
+                                    column.field = columnArray[j];
+                                    index++;
+                                } else if (index === 1) {
+                                    column.type = columnArray[j];
+                                    break;
+                                }
+                            }
+
+                        }
+
+                    }
+                    if (column && column.field) {
+                        sqlObj.columns[column.field] = column;
+                    }
+                }
+            }
+            window.sqlObj = sqlObj;
+            return sqlObj;
+        };
+
+
+        var getParam = function (jspath, parm) {
+            var urlParse = jspath.split("\?");
+            if (urlParse.length > 1) {
+                var params = urlParse[1].split("&");
+                for (var i = 0; i < params.length; i++) {
+                    var pr = params[i].split("=");
+                    if (pr[0] === parm) {
+                        return pr[1];
+                    }
+                }
+            }
+            return "";
+        };
+
+        var getBeanText = function () {
+            var sqlObj = getSqlObj();
+            var packageName = getParam(window.location.search, 'pkg');
+            if (!packageName || packageName === '') {
+                packageName = 'cn.gudqs.generator';
+            }
+            var beanText = getTemplate(packageName);
+            var nameArray = sqlObj.tableName.split('_');
+            var columnText = '';
+            var keys = Object.keys(sqlObj.columns);
+            for (var i = 0; i < keys.length; i++) {
+                var column = sqlObj.columns[keys[i]];
+                var id = '';
+                if (column.id) {
+                    id = '    @Id\n';
+                }
+                var tips = '';
+                if (column.comment) {
+                    var noTip = column.comment && window.location.search.indexOf('tip=0') !== -1;
+                    var hasTip = column.comment && window.location.search.indexOf('tip=1') !== -1;
+
+                    var noSwagger = column.comment && window.location.search.indexOf('swagger=0') !== -1;
+                    var hasSwagger = column.comment && window.location.search.indexOf('swagger=1') !== -1;
+                    if (!noSwagger) {
+                        tips += '    @ApiModelProperty("' + column.comment + '")\n';
+                    }
+                    if (hasTip) {
+                        tips += '    /**\n     * ' + column.comment + '\n     */\n';
+                    }
+                }
+
+                var generator = '';
+                if (column.generator === 'JDBC') {
+                    generator = '    @GeneratedValue(generator = "JDBC")\n';
+                }
+                var type = column.type;
+                column.type = type || '';
+                if (column.type.toUpperCase() === 'INT') {
+                    type = 'Integer';
+                } else if (column.type.toUpperCase().indexOf('VARCHAR') !== -1
+                    || column.type.toUpperCase().indexOf('LONGTEXT') !== -1) {
+                    type = 'String';
+                } else if (column.type.toUpperCase().indexOf('FLOAT') !== -1) {
+                    type = 'Float';
+                } else if (column.type.toUpperCase().indexOf('DECIMAL') !== -1) {
+                    type = 'Float';
+                } else if (column.type.toUpperCase().indexOf('TIMESTAMP') !== -1) {
+                    type = 'String';
+                }
+                columnText += (tips + id + generator + '    private ' + type + ' ' + column.field + '; \n');
+            }
+            sqlObj.className = ((nameArray[0].substr(0, 1).toUpperCase()) + nameArray[0].substring(1));
+            if (nameArray.length > 1) {
+                for (var k = 1; k < nameArray.length; k++) {
+                    var name = nameArray[k];
+                    sqlObj.className += ((name.substr(0, 1).toUpperCase()) + name.substring(1));
+                }
+            }
+            beanText = beanText.replace('\{\{tableName\}\}', sqlObj.tableName);
+            beanText = beanText.replace('\{\{tableComment\}\}', sqlObj.tableComment);
+            beanText = beanText.replace(/\{\{className\}\}/gm, sqlObj.className);
+            beanText = beanText.replace('\{\{date\}\}', (new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + "-" + new Date().getDate()));
+            beanText = beanText.replace('\{\{columns\}\}', columnText);
+
+            return beanText;
+        };
+
+        document.querySelector('.sql-text').onkeyup = function (e) {
+            if (e.keyCode === 13) {
+                const modelCode = getBeanText();
+                document.querySelector(".bean-text").innerHTML = modelCode;
+                document.querySelector(".bean-text").focus();
+                document.querySelector(".bean-text").select();
+                var input = document.createElement('textarea');
+                input.setAttribute('readonly', 'readonly');
+                document.body.appendChild(input);
+                input.value = modelCode;
+                input.select();
+                if (document.execCommand('copy')) {
+                    document.execCommand('copy');
+                    document.querySelector('.tip').innerHTML = '<h3>复制成功</h3>';
+                    setTimeout(function () {
+                        document.querySelector('.tip').innerHTML = '';
+                    }, 1800);
+                } else {
+                    document.querySelector('.tip').innerHTML = '<h3>自动复制失败, 请手动 (ctrl + c) or (cmd + c)</h3>';
+                    setTimeout(function () {
+                        document.querySelector('.tip').innerHTML = '';
+                    }, 1800);
+                }
+                document.body.removeChild(input);
+                document.querySelector(".bean-text").focus();
+                document.querySelector(".bean-text").select();
+            }
+        }
+
+    }();
+
+</script>
+</html>

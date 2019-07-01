@@ -1,0 +1,59 @@
+package {{basePackage}}.web;
+
+import {{base}}.BaseController;
+import {{base}}.ParamVo;
+import {{base}}.ResultBean;
+import {{basePackage}}.entity.{{className}};
+import {{basePackage}}.service.{{serviceName}};
+import io.swagger.annotations.Api;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
+import java.util.List;
+
+
+/**
+ * @author generate by guddqs
+ * @date {{date}}
+ */
+@RestController
+@RequestMapping("{{controllerUrl}}")
+@Api(description = "{{controllerName}}")
+public class {{controllerName}} extends BaseController {
+
+    @Resource
+    private {{serviceName}} {{serviceBeanName}};
+
+    @PostMapping("/list")
+    public ResultBean<List<{{className}}>> list(@RequestBody ParamVo paramVo) throws Exception {
+        return success({{serviceBeanName}}.findAll(paramVo));
+    }
+
+    @PostMapping("/update")
+    public ResultBean update({{className}} entity) throws Exception {
+        {{serviceBeanName}}.updateSelective(entity);
+        return success();
+    }
+
+    @PostMapping("/add")
+    public ResultBean add({{className}} entity) throws Exception {
+        {{serviceBeanName}}.insertSelective(entity);
+        return success();
+    }
+
+    @PostMapping("/delete")
+    public ResultBean delete(@RequestBody Object[] ids) throws Exception {
+        {{serviceBeanName}}.delete(ids);
+        return success();
+    }
+
+    @PostMapping("/logicDelete")
+    public ResultBean logicDelete(@RequestBody Object[] ids) {
+        {{serviceBeanName}}.logicDelete(ids);
+        return success();
+    }
+
+}

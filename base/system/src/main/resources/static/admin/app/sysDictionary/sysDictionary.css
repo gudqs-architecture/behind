@@ -1,0 +1,11 @@
+.dictionary-wrapper {
+
+}
+
+.dictionary-wrapper .dictionary-list-wrapper {
+    margin-top: 7px;
+}
+
+.dictionary-wrapper .dictionary-list-wrapper .dictionary-son-list {
+    padding-left: 7px;
+}

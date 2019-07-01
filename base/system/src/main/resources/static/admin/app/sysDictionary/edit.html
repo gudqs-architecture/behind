@@ -1,0 +1,54 @@
+<div class="my-box">
+    <form class="layui-form layui-form-pane1 dictionary-form" method="post">
+        <div class="layui-form-item">
+            <label class="layui-form-label">字典键</label>
+            <div class="layui-input-block">
+                <input name="dictionaryCode" lay-verify="required"
+                       required
+                       data-ok
+                       maxlength="50"
+                       placeholder="请输入字典键"
+                       value="{{dictionaryCode}}"
+                       class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item dictionary-value">
+            <label class="layui-form-label">字典值</label>
+            <div class="layui-input-block">
+                <input name="dictionaryValue" lay-verify="required"
+                       required
+                       data-ok
+                       maxlength="120"
+                       placeholder="请输入字典值"
+                       value="{{dictionaryValue}}"
+                       class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">字典描述</label>
+            <div class="layui-input-block">
+                <input name="dictionaryMemo" lay-verify="required"
+                       required
+                       maxlength="100"
+                       placeholder="请输入字典描述"
+                       autofocus
+                       data-ok
+                       value="{{dictionaryMemo}}"
+                       class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">排序</label>
+            <div class="layui-input-block">
+                <input name="displayOrder" lay-verify="required"
+                       required
+                       data-ok
+                       maxlength="100"
+                       placeholder="请输入排序编号, 数字越大排的越前"
+                       value="{{displayOrder}}"
+                       class="layui-input">
+            </div>
+        </div>
+
+    </form>
+</div>
