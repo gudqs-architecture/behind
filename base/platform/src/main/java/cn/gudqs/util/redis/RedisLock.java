@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class RedisLock {
 
-    private static final String LOCK_PREFIX = "mountain:{Schedule-Lock}:";
+    private static final String LOCK_PREFIX = "gudqs:{Schedule-Lock}:";
     private static final Long LOCK_SUCCESS = 1L;
     /**
      * 定义解锁的lua脚本

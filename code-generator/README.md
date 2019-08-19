@@ -2,7 +2,7 @@
 
 ## SQL 转 Model
 运行项目, 访问 /admin/sql2bean.html, 按提示粘贴 SQL, 复制代码后,  
-在此包下 (`com.mountain.generator`) 新建一个 `Java Class`, 将代码覆盖粘贴即可
+在此包下 (`cn.gudqs.generator`) 新建一个 `Java Class`, 将代码覆盖粘贴即可(Ctrl + A -> Ctrl + V)
 
 ## Model 生成 mapper,service,controller,mapper xml
 首先, 编辑 generator-config.properties 文件, 一般只需要修改 `generator.to.package`  

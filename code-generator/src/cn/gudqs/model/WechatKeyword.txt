@@ -1,4 +1,4 @@
-package com.mountain.generator;
+package cn.gudqs.generator;
 
 import lombok.Data;
 

@@ -41,7 +41,7 @@
 
 ### 常用配置
 > cors, 邮件发送, mybatis 插件, 定时任务异常处理, swagger 文档, mvc 拦截器及其他  
-`com.mountain.system.interceptor` 常用拦截器, 拦截 /api/* 及 /admin/*
+`cn.gudqs.system.interceptor` 常用拦截器, 拦截 /api/* 及 /admin/*
 
 ### 工具类
 > 微信 token   

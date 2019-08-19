@@ -6,7 +6,7 @@ mybaits 分页插件
 ## 目录结构
 ```
 .
-└── mountain
+└── gudqs
     ├── base
     │   ├── BaseController.java    #通用 controller 父类
     │   ├── BaseEntity.java        #通用实体类父类

@@ -1,2 +1,2 @@
 ./deploy-local.sh
-./deploy-mountain.sh
+./deploy-server.sh
