@@ -1,4 +1,4 @@
-package com.guddqs.refactor.generator;
+package cn.gudqs.refactor.generator;
 
 import java.io.File;
 import java.io.FileReader;
@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * @author wq
+ */
 public class Main {
 
     public static String OVERRIDE = "false";
@@ -20,7 +23,7 @@ public class Main {
     private static String MAPPER_PREFIX = "src/mybatis-mapper";
     private static String BASE_PACKAGE = "java";
     private static String GENERATOR_API = "false";
-    private static String BASE = "com.mountain.base";
+    private static String BASE = "cn.gudqs.base";
     private static String FILE_SP= System.getProperty("file.separator");
     private static Map<String, GeneratorTaskVo> classNames = new HashMap<>();
 

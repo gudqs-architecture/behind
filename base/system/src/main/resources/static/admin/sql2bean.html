@@ -45,9 +45,9 @@
                 ' * @description {{tableComment}}\n' +
                 ' */\n' +
                 '@Data\n' +
+                '@NoArgsConstructor\n' +
                 '@Table(name = "{{tableName}}")\n' +
                 'public class {{className}} {\n\n' +
-                '    public {{className}}() { }\n' +
                 '\n' +
                 '{{columns}}' +
                 '\n' +
@@ -195,8 +195,25 @@
                     type = 'Float';
                 } else if (column.type.toUpperCase().indexOf('TIMESTAMP') !== -1) {
                     type = 'String';
+                } else if (column.type.toUpperCase().indexOf('BIGINT') !== -1) {
+                    type = 'Long';
+                } else if (column.type.toUpperCase().indexOf('DOUBLE') !== -1) {
+                    type = 'Double';
                 }
-                columnText += (tips + id + generator + '    private ' + type + ' ' + column.field + '; \n');
+                var field = column.field;
+                if (field.indexOf('_') !== -1) {
+                    var firstToUpper = function (str) {
+                        return str.substr(0, 1).toUpperCase() + str.substring(1)
+                    };
+                    var fieldSplitArray = field.split('_');
+                    var camp = fieldSplitArray[0];
+                    for (var j = 1; j < fieldSplitArray.length; j++) {
+                        var str0 = fieldSplitArray[j];
+                        camp += firstToUpper(str0);
+                    }
+                    field = camp;
+                }
+                columnText += (tips + id + generator + '    private ' + type + ' ' + field + '; \n');
             }
             sqlObj.className = ((nameArray[0].substr(0, 1).toUpperCase()) + nameArray[0].substring(1));
             if (nameArray.length > 1) {

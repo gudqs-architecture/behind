@@ -1,4 +1,4 @@
-package com.guddqs.refactor.generator;
+package cn.gudqs.refactor.generator;
 
 /**
  * @author wq

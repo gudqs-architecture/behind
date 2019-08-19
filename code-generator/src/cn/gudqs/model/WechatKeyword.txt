@@ -39,7 +39,7 @@ public class WechatKeyword {
     /**
      * 更新时间
      */
-    private TIMESTAMP updateTime;
+    private String updateTime;
     /**
      * 0|1
      */

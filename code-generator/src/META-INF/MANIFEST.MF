@@ -1,3 +1,3 @@
 Manifest-Version: 1.0
-Main-Class: com.guddqs.refactor.generator.Main
+Main-Class: cn.gudqs.refactor.generator.Main
 

@@ -1,4 +1,4 @@
-package com.guddqs.refactor.generator;
+package cn.gudqs.refactor.generator;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
