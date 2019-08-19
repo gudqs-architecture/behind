@@ -194,7 +194,7 @@
 
             if (operationData.hasOwnProperty(menu.sysMenuId)) {
                 menuLi += '<ul class="operation-list">';
-                var textMap = getOperationTextMap(menuIdMap[menu.sysMenuId]);
+                var textMap = getOperationTextMap(menu);
                 $.each(operationData[menu.sysMenuId], function (code, operation) {
                     var operationText = textMap[operation.code];
                     operationText = operationText || operation.code;
