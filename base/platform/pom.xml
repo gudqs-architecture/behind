@@ -152,6 +152,32 @@
 
     <profiles>
         <profile>
+            <id>remote-deploy</id>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>guddqs</id>
+                    <url>http://nexus.gudqs.cn:8081/nexus/content/repositories/snapshots/</url>
+                </snapshotRepository>
+                <repository>
+                    <id>guddqs</id>
+                    <url>http://nexus.gudqs.cn:8081/nexus/content/repositories/releases/</url>
+                </repository>
+            </distributionManagement>
+        </profile>
+        <profile>
+            <id>local-deploy</id>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>guddqs</id>
+                    <url>http://nexus:8081/nexus/content/repositories/snapshots/</url>
+                </snapshotRepository>
+                <repository>
+                    <id>guddqs</id>
+                    <url>http://nexus:8081/nexus/content/repositories/releases/</url>
+                </repository>
+            </distributionManagement>
+        </profile>
+        <profile>
             <id>release</id>
             <build>
                 <plugins>
