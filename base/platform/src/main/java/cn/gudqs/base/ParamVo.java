@@ -117,13 +117,13 @@ public class ParamVo {
 
         }
         if (FilterVo.Type.LIST.equals(type)) {
-            dealList(filterVo, safeValue);
+            dealList(filterVo);
         }
         this.filter.add(filterVo);
         return this;
     }
 
-    private void dealList(FilterVo filterVo, String safeValue) {
+    private void dealList(FilterVo filterVo) {
         filterVo.setOperator(" in ");
         StringBuilder sbValue = new StringBuilder("(");
         if (filterVo.getValue() != null) {
@@ -135,6 +135,7 @@ public class ParamVo {
                         sbValue.append(val.toString());
                     } else {
                         sbValue.append("'");
+                        String safeValue = val.toString().replaceAll("'", "''");
                         sbValue.append(safeValue);
                         sbValue.append("'");
                     }
