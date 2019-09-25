@@ -15,15 +15,19 @@ import java.util.concurrent.*;
 public class ThreadUtil {
 
     private static Logger logger = Logger.getLogger(ThreadUtil.class);
+    private static boolean debug = false;
     private static ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("ThreadUtil-pool-%d").build();
     private static ExecutorService multiThreadPool = new ThreadPoolExecutor(10, 2000,
-            10L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(15000), namedThreadFactory, new ThreadPoolExecutor.AbortPolicy());
+            10L, TimeUnit.SECONDS, new LinkedBlockingQueue<>(15000), namedThreadFactory, new ThreadPoolExecutor.AbortPolicy());
 
     public static void changeSize(Integer corePoolSize, Integer maxPoolSize, Integer queueSize) {
         multiThreadPool = new ThreadPoolExecutor(corePoolSize, maxPoolSize,
                 10L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(queueSize), namedThreadFactory, new ThreadPoolExecutor.AbortPolicy());
     }
 
+    public static void debug() {
+        ThreadUtil.debug = true;
+    }
     public static void execute(Runnable task) {
         multiThreadPool.execute(task);
     }
@@ -68,7 +72,9 @@ public class ThreadUtil {
         } else {
             running = false;
         }
-        System.out.println("run: group start: " + group + ":" + running);
+        if (debug) {
+            System.out.println("run: group start: " + group + ":" + running);
+        }
         if (!running) {
             groupRunning.put(group, true);
             runNext(group);
@@ -76,12 +82,16 @@ public class ThreadUtil {
     }
 
     private synchronized static void runNext(final String group) {
-        System.out.println("run: next start: " + group);
+        if (debug) {
+            System.out.println("run: next start: " + group);
+        }
         execute(new Runnable() {
             @Override
             public void run() {
                 ConcurrentLinkedDeque<Runnable> taskList = waitingTaskGroupList.get(group);
-                System.out.println("runNext: start--> " + group + "; size: " + taskList.size());
+                if (debug) {
+                    System.out.println("runNext: start--> " + group + "; size: " + taskList.size());
+                }
                 if (taskList.size() > 0) {
                     try {
                         final Runnable task0 = taskList.pop();
@@ -94,7 +104,9 @@ public class ThreadUtil {
                     runNext(group);
                 } else {
                     groupRunning.put(group, false);
-                    System.out.println("run: group end: " + group + ":" + groupRunning.get(group));
+                    if (debug) {
+                        System.out.println("run: group end: " + group + ":" + groupRunning.get(group));
+                    }
                 }
             }
         });
