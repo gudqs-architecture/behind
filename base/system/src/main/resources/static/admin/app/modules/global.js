@@ -507,7 +507,7 @@ layui.define(['webConfig', 'common', 'tab'], function (exports) {
             }
             opened = true;
 
-            var idMenu = window.menuMap[opt.url];
+            var idMenu = window.menuMap && window.menuMap[opt.url];
             if (idMenu) {
                 var id = window.menuMap[opt.url].sysMenuId;
                 opt.sysMenuId = opt.sysMenuId || id;
