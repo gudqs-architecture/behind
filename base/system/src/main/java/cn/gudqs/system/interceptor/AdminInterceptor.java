@@ -3,10 +3,7 @@ package cn.gudqs.system.interceptor;
 import cn.gudqs.exception.CustomException;
 import cn.gudqs.exception.ErrorCodes;
 import cn.gudqs.system.admin.service.ISysAuthService;
-import cn.gudqs.util.CommonUtil;
-import cn.gudqs.util.JsonResultUtil;
-import cn.gudqs.util.JsonUtils;
-import cn.gudqs.util.JwtUtil;
+import cn.gudqs.util.*;
 import com.auth0.jwt.interfaces.Claim;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -70,6 +67,11 @@ public class AdminInterceptor implements HandlerInterceptor {
                 throw new CustomException(ErrorCodes.TOKEN_ERROR);
             }
         } catch (Exception e) {
+            String message = e.getMessage();
+            if (message == null) {
+                message = e.toString();
+            }
+            LoggerUtil.error("admin token:: " + message);
             ErrorCodes errorCodes = ErrorCodes.TOKEN_ERROR;
             if (e instanceof CustomException) {
                 CustomException customException = (CustomException) e;
