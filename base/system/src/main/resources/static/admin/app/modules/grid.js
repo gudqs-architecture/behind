@@ -30,6 +30,7 @@ layui.define(['jquery', 'form', 'laydate', 'laypage'], function (exports) {
                 multiSelect: true,
                 enableSort: true,
                 enableStaticSort: false,
+                enableStaticFilter: false,
                 enableFilter: true,
                 enablePage: true,
                 dataApi: true,
@@ -102,7 +103,7 @@ layui.define(['jquery', 'form', 'laydate', 'laypage'], function (exports) {
                 this.loaded = true;
                 var that = this;
                 this.load(this.getDefaultParam(), function (page) {
-                    that.page(page.total);
+                    that.page(page);
                 });
             }
         },
@@ -206,7 +207,7 @@ layui.define(['jquery', 'form', 'laydate', 'laypage'], function (exports) {
                 filter: this.$filter,
                 other: $.extend({}, this.$other, reqParam || {})
             }), function (page) {
-                that.page(page.total);
+                that.page(page);
             });
         }
         ,
@@ -572,6 +573,7 @@ layui.define(['jquery', 'form', 'laydate', 'laypage'], function (exports) {
                                     value: ids
                                 };
 
+                                //单选多选
                                 enterFilter(that, _filter, $otherTh);
                             };
                             $columnDown.find('li').on('click', function (e) {
@@ -591,6 +593,7 @@ layui.define(['jquery', 'form', 'laydate', 'laypage'], function (exports) {
 
                         $columnDown.find('input[type*=text],input[type*=number]').keyup(function (e) {
                             if (e.keyCode === 13) {
+                                // 字符, 数字
                                 enterFilter(that, filter, $otherTh);
                             }
                             e.stopPropagation();
@@ -602,9 +605,10 @@ layui.define(['jquery', 'form', 'laydate', 'laypage'], function (exports) {
                     $(this).append($columnDown);
                     if (filter.type === 'date') {
                         laydate.render({
-                            elem: '.body-item.active input[name*=grid-filter]',
+                            elem: '.body-item.active input[type*=Wdate]',
                             format: 'yyyy-MM-dd',
                             done: function () {
+                                // 日期
                                 enterFilter(that, filter, $otherTh);
                             }
                         });
@@ -892,6 +896,7 @@ layui.define(['jquery', 'form', 'laydate', 'laypage'], function (exports) {
             };
 
             this.$this = _$this;
+            this.oldStore = [];
             _$this.empty().append(this.html());
 
             this.$head = _$this.find('.grid-wrapper>.grid-content>div.table_head');
@@ -909,7 +914,7 @@ layui.define(['jquery', 'form', 'laydate', 'laypage'], function (exports) {
 
             var that = this;
             this.load(that.getDefaultParam(), function (page) {
-                that.page(page.total);
+                that.page(page);
                 that.initEvent();
             });
         }
@@ -962,6 +967,9 @@ layui.define(['jquery', 'form', 'laydate', 'laypage'], function (exports) {
          */
         body: function () {
 
+        },
+        clearAll: function () {
+            this.$body.find('table tbody').empty();
         },
         addRow: function (record) {
             var that = this;
@@ -1045,7 +1053,9 @@ layui.define(['jquery', 'form', 'laydate', 'laypage'], function (exports) {
                 if (errMsg) {
                     $.tip.error(errMsg);
                 } else {
-                    that.page(0);
+                    if (callback) {
+                        callback({total: 0});
+                    }
                 }
                 that.sorted = false;
                 that.searched = false;
@@ -1121,11 +1131,19 @@ layui.define(['jquery', 'form', 'laydate', 'laypage'], function (exports) {
          * 加载 page 分页
          * @param total
          */
-        page: function (total) {
+        page: function (res) {
+            var total = res.total;
+            var pageNo = this.$page.pageNo;
+            var pageSize = this.$page.pageSize;
+            if (!total) {
+                total = res.data ? res.data.length : 0;
+                pageNo = 1;
+                pageSize = total;
+            }
             var page = {
                 total: total,
-                pageNo: this.$page.pageNo,
-                pageSize: this.$page.pageSize
+                pageNo: pageNo,
+                pageSize: pageSize
             };
             if (this.options.enablePage) {
                 var totalPages = (page.total % page.pageSize === 0) ? (page.total / page.pageSize) : (Math.floor(page.total / page.pageSize) + 1);
@@ -1169,6 +1187,69 @@ layui.define(['jquery', 'form', 'laydate', 'laypage'], function (exports) {
                 '    <img src="' + webConfig.rootDir + 'res/img/data-null.png" width="180" height="120">' +
                 '</div>'
             );
+        },
+        staticFilter: function (filter) {
+            if (filter) {
+                this.checkExistsFilter(filter.field, true);
+                this.$filter.push(filter);
+            }
+            var that = this;
+            var val = filter.value;
+            var field = filter.field;
+            var type = filter.type;
+
+            var hasInitOldStore = that.oldStore && that.oldStore.length > 0;
+            var items;
+            if (hasInitOldStore) {
+                items = that.oldStore;
+            } else {
+                items = that.getStore();
+            }
+            that.clearAll();
+            that.$this.find('.grid-loading').show();
+            setTimeout(function () {
+                var oldStores = [];
+                var recordItems = [];
+                for (var i = 0; i < items.length; i++) {
+                    var item = items[i];
+                    oldStores.push(item);
+                    let itemFieldVal = item[field];
+
+                    if (type === 'string') {
+
+                        if (itemFieldVal && itemFieldVal !== '') {
+                            if (itemFieldVal.toString().indexOf(val) !== -1) {
+                                recordItems.push(item);
+                            }
+                        }
+                    } else if (type === 'list') {
+                        var flag = false;
+                        if (!val || val.length === 0) {
+                            flag = true;
+                        }
+                        for (var j = 0; j < val.length; j++) {
+                            var choseV = val[j];
+                            if (choseV == itemFieldVal.toString()) {
+                                flag = true;
+                                break;
+                            }
+                        }
+                        if (flag) {
+                            recordItems.push(item);
+                        }
+                    }
+
+                }
+                if (!hasInitOldStore) {
+                    that.oldStore = oldStores;
+                }
+
+                that.searched = false;
+                that.addRows(recordItems);
+                layui.form.render();
+                that.initBodyEvent();
+                that.$this.find('.grid-loading').hide();
+            }, 200);
         }
 
     };
@@ -1191,7 +1272,11 @@ layui.define(['jquery', 'form', 'laydate', 'laypage'], function (exports) {
             filter.operator = $(input).data('operator');
         }
         that.searched = true;
-        that.loadWithFilter(filter);
+        if (that.options.enableStaticFilter) {
+            that.staticFilter(filter);
+        } else {
+            that.loadWithFilter(filter);
+        }
 
     };
 
