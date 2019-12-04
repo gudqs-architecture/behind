@@ -34,7 +34,6 @@
                 '\n' +
                 'import io.swagger.annotations.ApiModelProperty;\n' +
                 'import lombok.Data;\n' +
-                'import lombok.NoArgsConstructor;\n' +
                 '\n' +
                 'import javax.persistence.GeneratedValue;\n' +
                 'import javax.persistence.Id;\n' +
@@ -46,11 +45,11 @@
                 ' * @description {{tableComment}}\n' +
                 ' */\n' +
                 '@Data\n' +
-                '@NoArgsConstructor\n' +
                 '@Table(name = "{{tableName}}")\n' +
                 'public class {{className}} {\n\n' +
-                '\n' +
                 '{{columns}}' +
+                '\n' +
+                '    public {{className}}() { }\n' +
                 '\n' +
                 '}\n' +
                 '\n';
